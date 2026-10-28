@@ -26,7 +26,7 @@ Built for tech interview content (JavaScript, React, system design, DSA, backend
 You need [Claude Code](https://claude.com/claude-code), **ffmpeg**, **Node.js 18+** and **Google Chrome**. On a Mac with [Homebrew](https://brew.sh), setup installs ffmpeg and Node for you.
 
 ```bash
-git clone https://github.com/<you>/reel-studio ~/.claude/skills/reel
+git clone https://github.com/AwaisZulfqar/reel-studio ~/.claude/skills/reel
 bash ~/.claude/skills/reel/setup.sh
 ```
 
@@ -42,7 +42,7 @@ Then open the settings page and record your voice:
 
 Restart Claude Code. Done. Type `/reel <topic>` in any folder.
 
-> Not sure how? Paste this into Claude Code: **"Install the skill from github.com/&lt;you&gt;/reel-studio into ~/.claude/skills/reel and run its setup.sh"**
+> Not sure how? Paste this into Claude Code: **"Install the skill from github.com/AwaisZulfqar/reel-studio into ~/.claude/skills/reel and run its setup.sh"**
 
 ## Use it
 
