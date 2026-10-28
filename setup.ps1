@@ -6,13 +6,16 @@ function Say($m) { Write-Host "`n$m" -ForegroundColor Cyan }
 function Refresh-Path {
   $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User')
 }
-function Need($cmd, $id, $name) {
+function Need($cmd, $id, $choco, $name) {
   if (Get-Command $cmd -ErrorAction SilentlyContinue) { Write-Host "  ok  $name"; return }
-  if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-    throw "$name is missing and winget is not available. Install $name manually, then run this again."
-  }
   Write-Host "  installing $name..."
-  winget install -e --id $id --silent --accept-package-agreements --accept-source-agreements | Out-Null
+  if (Get-Command winget -ErrorAction SilentlyContinue) {
+    winget install -e --id $id --silent --accept-package-agreements --accept-source-agreements | Out-Null
+  } elseif (Get-Command choco -ErrorAction SilentlyContinue) {
+    choco install -y --no-progress $choco | Out-Null
+  } else {
+    throw "$name is missing and neither winget nor Chocolatey is available. Install $name manually, then run this again."
+  }
   Refresh-Path
   if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
     throw "$name was installed but isn't on PATH yet. Close this window, open a new PowerShell, and run setup again."
@@ -20,9 +23,9 @@ function Need($cmd, $id, $name) {
 }
 
 Say '1/5 Checking tools'
-Need ffmpeg 'Gyan.FFmpeg' 'ffmpeg'
-Need node 'OpenJS.NodeJS.LTS' 'Node.js'
-Need uv 'astral-sh.uv' 'uv (Python manager)'
+Need ffmpeg 'Gyan.FFmpeg' 'ffmpeg' 'ffmpeg'
+Need node 'OpenJS.NodeJS.LTS' 'nodejs-lts' 'Node.js'
+Need uv 'astral-sh.uv' 'uv' 'uv (Python manager)'
 $chrome = @("$env:ProgramFiles\Google\Chrome\Application\chrome.exe", "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe",
             "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
 if ($chrome) { Write-Host '  ok  Google Chrome' } else {

@@ -1,0 +1,11 @@
+{
+  "keywords": ["const"],
+  "scenes": [
+    {"type": "hook", "tag": "javascript", "label": "CI test", "title": "Does this work everywhere?", "hl": "everywhere?",
+     "say": "This reel was made automatically to test the setup."},
+    {"type": "code", "file": "test.js", "code": "const ok = true;\nconsole.log(ok);", "output": "true", "outputCue": "prints",
+     "say": "Here is a tiny snippet, and it prints true."},
+    {"type": "cta", "text": "Follow for more", "hl": "more", "tapCue": "follow",
+     "say": "Follow for more interview prep."}
+  ]
+}

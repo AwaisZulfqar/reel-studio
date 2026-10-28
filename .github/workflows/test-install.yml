@@ -1,0 +1,52 @@
+name: Test install
+
+# Fresh Windows and macOS machines: run the real setup, then render a short reel with voice.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  install-and-render:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File setup.ps1
+
+      - name: Setup (macOS)
+        if: runner.os == 'macOS'
+        run: bash setup.sh
+
+      - name: Render a test reel
+        shell: bash
+        run: |
+          mkdir -p jobs/ci && cp tests/ci-script.json jobs/ci/script.json
+          if [ "$RUNNER_OS" = "Windows" ]; then PY=.venv/Scripts/python.exe; else PY=.venv/bin/python; fi
+          "$PY" make.py jobs/ci/script.json
+          test -s jobs/ci/ci.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 jobs/ci/ci.mp4
+
+      - name: Settings page starts
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then PY=.venv/Scripts/python.exe; else PY=.venv/bin/python; fi
+          "$PY" ui.py --no-open &
+          sleep 8
+          curl -sf http://localhost:4747/api/state
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reel-${{ matrix.os }}
+          path: jobs/ci/*.mp4
+          if-no-files-found: ignore
