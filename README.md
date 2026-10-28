@@ -1,5 +1,7 @@
 # Reel Studio — interview-prep reels from one line
 
+[![Install test: Windows + macOS](https://github.com/AwaisZulfqar/reel-studio/actions/workflows/test-install.yml/badge.svg)](https://github.com/AwaisZulfqar/reel-studio/actions/workflows/test-install.yml)
+
 Type a topic in Claude Code, get a finished Instagram reel in **your own voice**:
 
 ```
