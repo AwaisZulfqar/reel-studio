@@ -21,33 +21,76 @@ Built for tech interview content (JavaScript, React, system design, DSA, backend
 - ✅ **Self-checking voice**: every sentence is transcribed back, and any take that skips words is re-recorded automatically
 - 🎨 **Settings page**: voice, handle, colors, music, effects and pronunciations, no config files needed
 
-## Setup (once, ~10–15 minutes)
+## 🚀 Easy setup guide (one time, about 15 minutes)
 
-Install [Claude Code](https://claude.com/claude-code), then paste **one line**. The installer checks what's missing (Git, ffmpeg, Node.js, Python via uv, Chrome), installs it, and downloads the voice and caption models (~3.5 GB, first time only). It prints **READY** when done.
+No coding needed. Just copy and paste.
 
-**Windows** (open PowerShell):
+### Step 1: Install Claude Code
+Get it from **[claude.com/claude-code](https://claude.com/claude-code)** and sign in. This is the app you'll type `/reel` into.
+
+### Step 2: Open the terminal
+
+| Windows | Mac |
+|---|---|
+| Press the **Windows key**, type **PowerShell**, press **Enter** | Press **Cmd + Space**, type **Terminal**, press **Enter** |
+
+### Step 3: Paste one line and press Enter
+
+**Windows:**
 ```powershell
 irm https://raw.githubusercontent.com/AwaisZulfqar/reel-studio/main/install.ps1 | iex
 ```
 
-**macOS / Linux** (open Terminal):
+**Mac:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/AwaisZulfqar/reel-studio/main/install.sh | bash
 ```
 
-Then open the settings page and record your voice:
+It installs everything it needs on its own and shows the progress, `1/5` → `5/5`. The first time it downloads about 3.5 GB, so it takes 10–15 minutes. Wait until you see:
 
-| OS | Command |
-|---|---|
-| Windows | `& "$HOME\.claude\skills\reel\.venv\Scripts\python.exe" "$HOME\.claude\skills\reel\ui.py"` |
-| macOS / Linux | `~/.claude/skills/reel/.venv/bin/python ~/.claude/skills/reel/ui.py` |
+```
+READY
+```
+
+> 💡 If Windows asks *"Do you want to allow this app to make changes?"*, click **Yes**.
+
+### Step 4: Record your voice (20 seconds)
+Open **Claude Code** and type:
+```
+/reel settings
+```
+A page opens in your browser. Click **● Record 20s** and read the text on the screen out loud. Then type your Instagram handle and pick your colors and music. Everything saves on its own.
 
 <img src="docs/settings.png" width="420" alt="Settings page">
 
-Restart Claude Code. Done. Type `/reel <topic>` in any folder.
+> Other ways to open the settings page: double-click **`settings.cmd`** (Windows) or **`settings.command`** (Mac) in the `.claude/skills/reel` folder.
+
+### Step 5: Make your first reel 🎬
+In Claude Code, type:
+```
+/reel what is a closure in JavaScript
+```
+Wait about 5 minutes. Claude tells you where the video is saved, and it also shows up at the bottom of the settings page.
+
+**That's it.** From now on it's only Step 5.
 
 <details>
-<summary>What gets installed, and manual install</summary>
+<summary>❓ Something went wrong? (click)</summary>
+
+| Problem | Fix |
+|---|---|
+| `...isn't on PATH yet. Close this window...` | Close PowerShell, open a new one, paste the same line again. It continues where it stopped. |
+| `running scripts is disabled on this system` | Paste this first, then the install line: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` |
+| `winget is not recognized` (Windows) | Update **App Installer** from the Microsoft Store, then try again. |
+| Download stuck at the same % for minutes | Press **Ctrl + C**, paste the line again. It resumes. |
+| `/reel` not found in Claude Code | Fully quit and reopen Claude Code. |
+| Microphone doesn't record | Click the 🔒 next to the address bar → allow **Microphone**. Or upload a voice memo instead. |
+| Voice says a word wrong | Settings page → **Pronunciation** → add how it sounds (e.g. `const` → `konst`). |
+| Anything else | Run the install line again; it's safe and also updates you to the newest version. Still stuck? [Open an issue](https://github.com/AwaisZulfqar/reel-studio/issues) and paste the error. |
+</details>
+
+<details>
+<summary>🔧 What gets installed / manual install (click)</summary>
 
 | Tool | Why | Windows | macOS |
 |---|---|---|---|
@@ -57,7 +100,7 @@ Restart Claude Code. Done. Type `/reel <topic>` in any folder.
 | uv | sets up Python 3.12 | `winget install astral-sh.uv` | auto-installed |
 | Google Chrome | renders the frames | `winget install Google.Chrome` | [download](https://www.google.com/chrome/) |
 
-Manual: `git clone https://github.com/AwaisZulfqar/reel-studio ~/.claude/skills/reel`, then run `setup.ps1` (Windows: `powershell -ExecutionPolicy Bypass -File setup.ps1`) or `bash setup.sh` inside it. Both are safe to run again. Running the installer again also updates to the latest version.
+Everything goes into `~/.claude/skills/reel` (Windows: `C:\Users\<you>\.claude\skills\reel`). Manual install: `git clone https://github.com/AwaisZulfqar/reel-studio ~/.claude/skills/reel`, then run `setup.ps1` (Windows: `powershell -ExecutionPolicy Bypass -File setup.ps1`) or `bash setup.sh` inside it. To uninstall, delete that folder.
 </details>
 
 ## Use it

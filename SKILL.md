@@ -13,6 +13,9 @@ The engine is this skill's own folder (the folder this SKILL.md is in); call its
 - If `R/voice/me.wav` is missing, tell the user to open the settings page once to record their voice: `! R/.venv/bin/python R/ui.py` (use the real path). Without it, the default voice is used.
 - Everything personal lives in `R/config.json` (handle, voice, music, effects, colors, pronunciations). The settings page edits it; you can too.
 
+## Settings page
+If the user types `/reel settings` (or asks to change their voice, handle, colors, music or effects), start the settings page in the background and give them the link: `R/.venv/bin/python R/ui.py` (Windows: `R\.venv\Scripts\python.exe R\ui.py`). It opens http://localhost:4747 (next free port if busy). Don't make a reel in that case.
+
 ## Steps
 1. **Slug**: kebab-case from the topic, e.g. `url-shortener`. Make `R/jobs/<slug>/`.
 2. **Write `R/jobs/<slug>/script.json`** (schema below). Rules for the voiceover (`say`):
