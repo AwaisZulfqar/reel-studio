@@ -95,7 +95,6 @@ Wait about 5 minutes. Claude tells you where the video is saved, and it also sho
 | Tool | Why | Windows | macOS |
 |---|---|---|---|
 | Git | download the skill | `winget install Git.Git` | `xcode-select --install` |
-| ffmpeg | audio/video processing | `winget install Gyan.FFmpeg` | `brew install ffmpeg` |
 | Node.js 18+ | video engine (Remotion) | `winget install OpenJS.NodeJS.LTS` | `brew install node` |
 | uv | sets up Python 3.12 | `winget install astral-sh.uv` | auto-installed |
 | Google Chrome | renders the frames | `winget install Google.Chrome` | [download](https://www.google.com/chrome/) |
@@ -153,7 +152,7 @@ You can also run it without Claude: write a `script.json` like the example and r
 
 - **macOS (Apple Silicon)**: tested on M1, uses the GPU for the voice.
 - **Windows 10/11**: `install.ps1` / `setup.ps1`. With an NVIDIA GPU, the CUDA build of PyTorch is installed automatically. Without one, the voice runs on the CPU and a reel takes noticeably longer (roughly 10–20 min).
-- **Linux**: `install.sh`; install ffmpeg, node and Chrome/Chromium with your package manager first. CUDA is used if available.
+- **Linux**: `install.sh`; install node and Chrome/Chromium with your package manager first. CUDA is used if available.
 
 ## Licenses and fair use
 

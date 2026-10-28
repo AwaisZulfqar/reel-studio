@@ -23,7 +23,6 @@ function Need($cmd, $id, $choco, $name) {
 }
 
 Say '1/5 Checking tools'
-Need ffmpeg 'Gyan.FFmpeg' 'ffmpeg' 'ffmpeg'
 Need node 'OpenJS.NodeJS.LTS' 'nodejs-lts' 'Node.js'
 Need uv 'astral-sh.uv' 'uv' 'uv (Python manager)'
 $chrome = @("$env:ProgramFiles\Google\Chrome\Application\chrome.exe", "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe",

@@ -12,6 +12,8 @@ import argparse, difflib, hashlib, json, os, re, shutil, subprocess, sys, time, 
 
 import numpy as np
 
+import sound
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 VIDEO = os.path.join(ROOT, 'video')
 SR = 24000
@@ -85,7 +87,7 @@ def tts(text, out, cfg):
     speed = cfg.get('speed', 1.0)  # <1 slows the voice down without changing pitch
     if abs(speed - 1) > 0.01:
         tmp = out + '.tmp.wav'
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', out, '-af', f'atempo={speed}', '-ar', str(SR), '-ac', '1', tmp], check=True)
+        subprocess.run([sound.ffmpeg(), '-v', 'error', '-y', '-i', out, '-af', f'atempo={speed}', '-ar', str(SR), '-ac', '1', tmp], check=True)
         os.replace(tmp, out)
 
 
@@ -204,7 +206,6 @@ def main():
     props = {'handle': cfg.get('handle', '@yourhandle'), 'duration': round(t + 1.0, 3), 'keywords': sc.get('keywords', []), 'scenes': scenes}
     if audio:
         # voice + ducked music bed + synced sound effects, mixed into one track
-        import sound
         mcfg = dict(cfg)
         if a.music or 'music' in sc: mcfg['music'] = a.music or sc.get('music')
         for f in os.listdir(pub): os.remove(os.path.join(pub, f))

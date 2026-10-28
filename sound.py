@@ -3,12 +3,20 @@
 Everything is synthesized here (no samples, no licensing). Event times mirror the
 animation timing in video/src (cueTime etc.), so a pop lands when a card pops.
 """
-import glob, hashlib, os, random, re, subprocess
+import glob, hashlib, os, random, re, shutil, subprocess
 
 import numpy as np
 from scipy.signal import butter, lfilter
 
 SR = 44100
+
+
+def ffmpeg():
+    """System ffmpeg if on PATH, else the copy bundled with imageio-ffmpeg (always present after setup)."""
+    found = shutil.which('ffmpeg')
+    if found: return found
+    import imageio_ffmpeg
+    return imageio_ffmpeg.get_ffmpeg_exe()
 
 
 # ---------- helpers ----------
@@ -157,7 +165,7 @@ def load_track(path, duration):
         files = sorted(glob.glob(os.path.join(path, '*.mp3')) + glob.glob(os.path.join(path, '*.wav')) + glob.glob(os.path.join(path, '*.m4a')))
         if not files: return None
         path = random.choice(files)
-    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', path, '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True, check=True).stdout
+    raw = subprocess.run([ffmpeg(), '-v', 'error', '-i', path, '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True, check=True).stdout
     x = np.frombuffer(raw, np.float32).astype(np.float64)
     n = int(duration * SR)
     x = np.tile(x, n // len(x) + 1)[:n]
@@ -262,5 +270,5 @@ def mix(voice, voice_sr, props, cfg, seed, out_path):
     out = out / max(1.0, np.abs(out).max() / 0.98)
     raw = out.astype(np.float32).tobytes()
     # Instagram-friendly loudness
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'f32le', '-ar', str(SR), '-ac', '1', '-i', '-',
+    subprocess.run([ffmpeg(), '-v', 'error', '-y', '-f', 'f32le', '-ar', str(SR), '-ac', '1', '-i', '-',
                     '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-ar', str(SR), '-ac', '2', out_path], input=raw, check=True)

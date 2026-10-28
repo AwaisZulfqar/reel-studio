@@ -45,7 +45,8 @@ def state():
 
 def to_voice_wav(src, dst):
     """Any recording -> clean mono 24 kHz wav, leading silence trimmed, loudness evened out."""
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-ac', '1', '-ar', '24000',
+    import sound
+    subprocess.run([sound.ffmpeg(), '-v', 'error', '-y', '-i', src, '-ac', '1', '-ar', '24000',
                     '-af', 'silenceremove=1:0:-45dB,loudnorm', '-t', '30', dst], check=True)
 
 

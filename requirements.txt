@@ -3,3 +3,4 @@ faster-whisper==1.2.1
 numpy==1.26.4
 scipy==1.17.1
 setuptools==80.10.2
+imageio-ffmpeg==0.7.0

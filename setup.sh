@@ -7,14 +7,13 @@ say() { printf '\n\033[1m%s\033[0m\n' "$1"; }
 
 say "1/5 Checking tools"
 missing=""
-command -v ffmpeg >/dev/null || missing="$missing ffmpeg"
 command -v node >/dev/null || missing="$missing node"
 if [ -n "$missing" ]; then
   echo "Missing:$missing"
   if command -v brew >/dev/null; then
     echo "Installing with Homebrew..."; brew install $missing
   else
-    echo "Install them first (Mac: brew install$missing | Ubuntu: sudo apt install ffmpeg nodejs npm), then run this again."
+    echo "Install them first (Mac: brew install$missing | Ubuntu: sudo apt install nodejs npm), then run this again."
     exit 1
   fi
 fi

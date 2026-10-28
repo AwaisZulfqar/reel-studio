@@ -34,7 +34,7 @@ jobs:
           if [ "$RUNNER_OS" = "Windows" ]; then PY=.venv/Scripts/python.exe; else PY=.venv/bin/python; fi
           "$PY" make.py jobs/ci/script.json
           test -s jobs/ci/ci.mp4
-          ffprobe -v error -show_entries format=duration -of csv=p=0 jobs/ci/ci.mp4
+          "$PY" -c "import os; s=os.path.getsize('jobs/ci/ci.mp4'); print('reel ok,', s, 'bytes'); assert s > 100000"
 
       - name: Settings page starts
         shell: bash

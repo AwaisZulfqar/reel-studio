@@ -5,8 +5,10 @@
 set -e
 cd "$(dirname "$0")"
 mkdir -p voice
+FF=$(.venv/bin/python -c "import sound; print(sound.ffmpeg())")
+duration() { "$FF" -i "$1" 2>&1 | sed -n "s/.*Duration: \([0-9:.]*\).*/\1/p"; }
 if [ -n "$1" ]; then
-  ffmpeg -v error -y -i "$1" -ac 1 -ar 24000 -af "silenceremove=1:0:-45dB,loudnorm" -t 30 voice/me.wav
+  "$FF" -v error -y -i "$1" -ac 1 -ar 24000 -af "silenceremove=1:0:-45dB,loudnorm" -t 30 voice/me.wav
 else
   cat <<'TXT'
 Read this out loud in your normal reel voice (energetic, natural):
@@ -19,6 +21,6 @@ Recording starts in 3 seconds and lasts 20 seconds...
 TXT
   /bin/sleep 3
   echo "● RECORDING"
-  ffmpeg -v error -y -f avfoundation -i ":0" -t 20 -ac 1 -ar 24000 -af "silenceremove=1:0:-45dB,loudnorm" voice/me.wav
+  "$FF" -v error -y -f avfoundation -i ":0" -t 20 -ac 1 -ar 24000 -af "silenceremove=1:0:-45dB,loudnorm" voice/me.wav
 fi
-echo "Saved voice/me.wav ($(ffprobe -v error -show_entries format=duration -of csv=p=0 voice/me.wav | cut -c1-4)s). Your next reel will use your voice."
+echo "Saved voice/me.wav (length $(duration voice/me.wav)). Your next reel will use your voice."
