@@ -19,18 +19,20 @@ GAP = 0.45  # pause between scenes, seconds
 SENT_GAP = 0.32  # pause between sentences inside a scene
 # Installed Chrome is preferred over Remotion's bundled headless shell (which crashes in sandboxed shells)
 CHROMES = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', 'google-chrome', 'google-chrome-stable', 'chromium',
-           'chromium-browser', r'C:\Program Files\Google\Chrome\Application\chrome.exe']
+           'chromium-browser', r'C:\Program Files\Google\Chrome\Application\chrome.exe',
+           r'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe',
+           os.path.join(os.environ.get('LOCALAPPDATA', ''), r'Google\Chrome\Application\chrome.exe')]
 
 
 def load_config():
     p = os.path.join(ROOT, 'config.json')
     if not os.path.exists(p): shutil.copy(os.path.join(ROOT, 'config.example.json'), p)
-    return json.load(open(p))
+    return json.load(open(p, encoding='utf-8'))
 
 
 def write_brand(cfg):
     """Theme colors for the Remotion bundle."""
-    json.dump(cfg.get('theme', {}), open(os.path.join(VIDEO, 'src', 'brand.json'), 'w'))
+    json.dump(cfg.get('theme', {}), open(os.path.join(VIDEO, 'src', 'brand.json'), 'w', encoding='utf-8'))
 
 
 def read_wav(p):
@@ -143,6 +145,7 @@ def align(script_words, heard, dur):
 
 
 def main():
+    sys.stdout.reconfigure(errors='replace')  # Windows consoles can't print every character
     ap = argparse.ArgumentParser()
     ap.add_argument('script')
     ap.add_argument('--still', help='comma separated seconds: render PNG frames instead of video')
@@ -154,7 +157,7 @@ def main():
     cfg = load_config()
     script_path = os.path.abspath(a.script)
     job = os.path.dirname(script_path); name = os.path.basename(job)
-    sc = json.load(open(script_path))
+    sc = json.load(open(script_path, encoding='utf-8'))
     vdir = os.path.join(job, 'voice'); os.makedirs(vdir, exist_ok=True)
     voice_id = cfg.get('voice', '') + str(os.path.getmtime(os.path.join(ROOT, cfg['voice'])) if cfg.get('voice') and os.path.exists(os.path.join(ROOT, cfg['voice'])) else '')
 
@@ -207,11 +210,11 @@ def main():
         for f in os.listdir(pub): os.remove(os.path.join(pub, f))
         sound.mix(np.concatenate(audio), SR, props, mcfg, seed=name, out_path=os.path.join(pub, 'mix.wav'))
         props['audio'] = f'jobs/{name}/mix.wav'
-    pp = os.path.join(job, 'props.json'); json.dump(props, open(pp, 'w'), indent=1)
+    pp = os.path.join(job, 'props.json'); json.dump(props, open(pp, 'w', encoding='utf-8'), indent=1)
     write_brand(cfg)
     print(f'timeline: {t:.1f}s, {len(scenes)} scenes ({time.time() - t0:.0f}s so far)', flush=True)
 
-    npx = ['npx', 'remotion']
+    npx = [shutil.which('npx') or 'npx', 'remotion']  # which() finds npx.cmd on Windows
     # Remotion's bundled headless Chrome crashes in sandboxed shells; the installed Chrome works everywhere
     chrome = cfg.get('chrome') or next((c for c in CHROMES if os.path.exists(c) or shutil.which(c)), None)
     if chrome and not os.path.exists(chrome): chrome = shutil.which(chrome)
@@ -226,7 +229,7 @@ def main():
             print('saved', out)
         return
     out = os.path.abspath(a.out) if a.out else os.path.join(job, f'{name}.mp4')
-    cmd = npx + ['render', 'src/index.ts', 'Reel', out, f'--props={pp}', '--codec=h264', '--crf=18', '--log=error', '--concurrency=6']
+    cmd = npx + ['render', 'src/index.ts', 'Reel', out, f'--props={pp}', '--codec=h264', '--crf=18', '--log=error', f'--concurrency={max(1, min(6, (os.cpu_count() or 2) // 2 + 1))}']
     # GPU (angle) is much faster than software GL; fall back if this machine's Chrome refuses it
     gpu = [x.replace('swangle', 'angle') for x in browser]
     if subprocess.run(cmd + gpu, cwd=VIDEO).returncode != 0:

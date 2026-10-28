@@ -21,28 +21,44 @@ Built for tech interview content (JavaScript, React, system design, DSA, backend
 - ✅ **Self-checking voice**: every sentence is transcribed back, and any take that skips words is re-recorded automatically
 - 🎨 **Settings page**: voice, handle, colors, music, effects and pronunciations, no config files needed
 
-## Setup (once, ~10 minutes)
+## Setup (once, ~10–15 minutes)
 
-You need [Claude Code](https://claude.com/claude-code), **ffmpeg**, **Node.js 18+** and **Google Chrome**. On a Mac with [Homebrew](https://brew.sh), setup installs ffmpeg and Node for you.
+Install [Claude Code](https://claude.com/claude-code), then paste **one line**. The installer checks what's missing (Git, ffmpeg, Node.js, Python via uv, Chrome), installs it, and downloads the voice and caption models (~3.5 GB, first time only). It prints **READY** when done.
 
-```bash
-git clone https://github.com/AwaisZulfqar/reel-studio ~/.claude/skills/reel
-bash ~/.claude/skills/reel/setup.sh
+**Windows** (open PowerShell):
+```powershell
+irm https://raw.githubusercontent.com/AwaisZulfqar/reel-studio/main/install.ps1 | iex
 ```
 
-`setup.sh` builds the Python environment, installs the video engine and downloads the voice and caption models (~3.5 GB, first time only). It prints **READY** when done.
+**macOS / Linux** (open Terminal):
+```bash
+curl -fsSL https://raw.githubusercontent.com/AwaisZulfqar/reel-studio/main/install.sh | bash
+```
 
 Then open the settings page and record your voice:
 
-```bash
-~/.claude/skills/reel/.venv/bin/python ~/.claude/skills/reel/ui.py
-```
+| OS | Command |
+|---|---|
+| Windows | `& "$HOME\.claude\skills\reel\.venv\Scripts\python.exe" "$HOME\.claude\skills\reel\ui.py"` |
+| macOS / Linux | `~/.claude/skills/reel/.venv/bin/python ~/.claude/skills/reel/ui.py` |
 
 <img src="docs/settings.png" width="420" alt="Settings page">
 
 Restart Claude Code. Done. Type `/reel <topic>` in any folder.
 
-> Not sure how? Paste this into Claude Code: **"Install the skill from github.com/AwaisZulfqar/reel-studio into ~/.claude/skills/reel and run its setup.sh"**
+<details>
+<summary>What gets installed, and manual install</summary>
+
+| Tool | Why | Windows | macOS |
+|---|---|---|---|
+| Git | download the skill | `winget install Git.Git` | `xcode-select --install` |
+| ffmpeg | audio/video processing | `winget install Gyan.FFmpeg` | `brew install ffmpeg` |
+| Node.js 18+ | video engine (Remotion) | `winget install OpenJS.NodeJS.LTS` | `brew install node` |
+| uv | sets up Python 3.12 | `winget install astral-sh.uv` | auto-installed |
+| Google Chrome | renders the frames | `winget install Google.Chrome` | [download](https://www.google.com/chrome/) |
+
+Manual: `git clone https://github.com/AwaisZulfqar/reel-studio ~/.claude/skills/reel`, then run `setup.ps1` (Windows: `powershell -ExecutionPolicy Bypass -File setup.ps1`) or `bash setup.sh` inside it. Both are safe to run again. Running the installer again also updates to the latest version.
+</details>
 
 ## Use it
 
@@ -93,8 +109,8 @@ You can also run it without Claude: write a `script.json` like the example and r
 ## Platform notes
 
 - **macOS (Apple Silicon)**: tested on M1, uses the GPU for the voice.
-- **Linux / NVIDIA**: should work (CUDA is used if available); run `setup.sh` with ffmpeg, node and Chrome/Chromium installed.
-- **Windows**: use WSL.
+- **Windows 10/11**: `install.ps1` / `setup.ps1`. With an NVIDIA GPU, the CUDA build of PyTorch is installed automatically. Without one, the voice runs on the CPU and a reel takes noticeably longer (roughly 10–20 min).
+- **Linux**: `install.sh`; install ffmpeg, node and Chrome/Chromium with your package manager first. CUDA is used if available.
 
 ## Licenses and fair use
 

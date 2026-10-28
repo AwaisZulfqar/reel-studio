@@ -21,7 +21,7 @@ def cfg():
 
 
 def save_cfg(c):
-    json.dump(c, open(os.path.join(ROOT, 'config.json'), 'w'), indent=2)
+    json.dump(c, open(os.path.join(ROOT, 'config.json'), 'w', encoding='utf-8'), indent=2)
     make.write_brand(c)
 
 

@@ -8,6 +8,7 @@ description: Make a finished Instagram reel (1080x1920 MP4) about a tech intervi
 The engine is this skill's own folder (the folder this SKILL.md is in); call its absolute path R and use it in every command. Keep replies short; do the work, never ask the user to run commands except the one-time setup.
 
 ## 0. First run (once)
+- **Windows**: the Python is `R\.venv\Scripts\python.exe` (use it wherever this file says `R/.venv/bin/python`), and setup is `powershell -ExecutionPolicy Bypass -File R\setup.ps1`.
 - If `R/.venv/bin/python` is missing, run `bash R/setup.sh` in the background (installs Python env, Remotion, ~3.5 GB of models; 5–15 min). It prints `READY`. If it says ffmpeg/node are missing and there's no Homebrew, tell the user what to install.
 - If `R/voice/me.wav` is missing, tell the user to open the settings page once to record their voice: `! R/.venv/bin/python R/ui.py` (use the real path). Without it, the default voice is used.
 - Everything personal lives in `R/config.json` (handle, voice, music, effects, colors, pronunciations). The settings page edits it; you can too.
