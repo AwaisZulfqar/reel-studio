@@ -1,0 +1,39 @@
+{
+  "handle": "@yourhandle",
+  "voice": "voice/me.wav",
+  "exaggeration": 0.45,
+  "cfg": 0.35,
+  "temperature": 0.8,
+  "music": "auto",
+  "musicVolume": 0.45,
+  "speed": 0.92,
+  "whisper": "small.en",
+  "pronounce": {
+    "const": "konst",
+    "var": "vahr",
+    "async": "ay-sink",
+    "await": "uh-wait",
+    "JSON": "jay-son",
+    "npm": "N P M",
+    "useEffect": "use effect",
+    "useState": "use state",
+    "Node.js": "node J S",
+    "Next.js": "next J S",
+    "API": "A P I",
+    "SQL": "sequel",
+    "NoSQL": "no sequel",
+    "DOM": "dom",
+    "null": "nul",
+    "typeof": "type of",
+    "===": "triple equals",
+    "==": "double equals"
+  },
+  "sfx": true,
+  "sfxVolume": 0.35,
+  "theme": {
+    "bg": "#F3EFE6",
+    "ink": "#151515",
+    "accent": "#E4372B",
+    "mark": "#FFE066"
+  }
+}

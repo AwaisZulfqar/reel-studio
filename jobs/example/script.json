@@ -1,0 +1,95 @@
+{
+ "keywords": [
+  "hoisted",
+  "const",
+  "function",
+  "temporal",
+  "dead",
+  "zone"
+ ],
+ "scenes": [
+  {
+   "type": "hook",
+   "tag": "javascript",
+   "label": "Day 2 · JS interview prep",
+   "title": "Why does this function crash?",
+   "hl": "crash?",
+   "say": "Day two of JavaScript interview prep. Why does this function crash?"
+  },
+  {
+   "type": "code",
+   "file": "day2.js",
+   "code": "greet();\n\nconst greet = () => {\n  console.log(\"Hi\");\n};",
+   "highlight": [
+    1
+   ],
+   "highlightCue": "before",
+   "output": "ReferenceError: Cannot access\n'greet' before initialization",
+   "outputCue": "boom",
+   "say": "We call greet before it's defined, using a const arrow function. Boom. Reference error."
+  },
+  {
+   "type": "code",
+   "file": "day2.js",
+   "code": "greet();\n\nfunction greet() {\n  console.log(\"Hi\");\n}",
+   "highlight": [
+    3
+   ],
+   "highlightCue": "regular",
+   "output": "Hi",
+   "outputCue": "works",
+   "say": "Now the same thing with a regular function. It works, and prints hi."
+  },
+  {
+   "type": "compare",
+   "label": "why it happens",
+   "title": "It's hoisting",
+   "hl": "hoisting",
+   "left": {
+    "title": "function",
+    "icon": "🚀",
+    "points": [
+     {
+      "text": "Fully hoisted",
+      "cue": "fully"
+     },
+     {
+      "text": "Body moves to the top",
+      "cue": "body"
+     }
+    ]
+   },
+   "right": {
+    "title": "const",
+    "icon": "🔒",
+    "points": [
+     {
+      "text": "Hoisted, not initialized",
+      "cue": "too"
+     },
+     {
+      "text": "Temporal dead zone",
+      "cue": "temporal"
+     }
+    ]
+   },
+   "say": "Here's why. Function declarations are fully hoisted, body and all. const is hoisted too, but stays in the temporal dead zone until that line runs."
+  },
+  {
+   "type": "big",
+   "label": "interview rule",
+   "emoji": "🧠",
+   "text": "Define const functions before calling them.",
+   "hl": "before",
+   "say": "The rule: define const functions before you call them."
+  },
+  {
+   "type": "cta",
+   "text": "Follow for Day 3",
+   "hl": "Day 3",
+   "sub": "Comment: does var hoist too? 👇",
+   "tapCue": "follow",
+   "say": "So does var get hoisted too? Drop your answer in the comments, and follow for day three."
+  }
+ ]
+}

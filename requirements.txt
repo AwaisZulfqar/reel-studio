@@ -1,0 +1,5 @@
+chatterbox-tts==0.1.7
+faster-whisper==1.2.1
+numpy==1.26.4
+scipy==1.17.1
+setuptools==80.10.2

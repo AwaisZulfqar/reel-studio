@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reel Studio</title>
+<style>
+  :root {
+    --bg: #F3EFE6; --card: #fff; --ink: #151515; --dim: #77736B; --soft: #DCD6CA;
+    --accent: #E4372B; --mark: #FFE066; --ok: #1E9E57;
+    --shadow: 5px 5px 0 var(--ink); --border: 2px solid var(--ink);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 ui-sans-serif, -apple-system, "Inter", "Segoe UI", sans-serif;
+    background-image: linear-gradient(#DCD6CA55 1px, transparent 1px), linear-gradient(90deg, #DCD6CA55 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 16px 80px; }
+  header h1 { font-size: 44px; line-height: 1; margin: 0 0 8px; letter-spacing: -1.5px; }
+  header h1 em { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; color: var(--accent); }
+  header p { color: var(--dim); margin: 0 0 32px; }
+  section { background: var(--card); border: var(--border); box-shadow: var(--shadow); border-radius: 12px; padding: 22px; margin-bottom: 26px; }
+  h2 { font-size: 20px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+  h2 .n { font: 700 13px ui-monospace, monospace; background: var(--ink); color: #fff; border-radius: 6px; padding: 2px 7px; }
+  .hint { color: var(--dim); font-size: 14px; margin: 0 0 16px; }
+  label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
+  input[type=text], textarea {
+    width: 100%; font: inherit; padding: 10px 12px; border: var(--border); border-radius: 8px; background: #fff;
+  }
+  textarea { min-height: 64px; resize: vertical; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .grow { flex: 1; min-width: 200px; }
+  button, .btn {
+    font: 600 15px inherit; font-family: inherit; cursor: pointer; padding: 10px 16px; border: var(--border); border-radius: 8px;
+    background: #fff; color: var(--ink); box-shadow: 3px 3px 0 var(--ink); transition: transform .05s;
+  }
+  button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+  button.primary { background: var(--accent); color: #fff; }
+  button.rec { background: var(--accent); color: #fff; }
+  button:disabled { opacity: .5; cursor: wait; }
+  .pill { display: inline-block; font: 700 12px ui-monospace, monospace; padding: 3px 8px; border-radius: 6px; border: 2px solid var(--ink); }
+  .pill.ok { background: var(--ok); color: #fff; border-color: var(--ok); }
+  .pill.no { background: var(--mark); }
+  .script { background: var(--bg); border: 2px dashed var(--soft); border-radius: 8px; padding: 14px; font-size: 17px; margin: 10px 0; }
+  .slider { display: grid; grid-template-columns: 150px 1fr 54px; align-items: center; gap: 12px; margin: 10px 0; }
+  .slider span:first-child { font-weight: 600; font-size: 14px; }
+  .slider output { font: 600 14px ui-monospace, monospace; text-align: right; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .choice { display: flex; gap: 10px; flex-wrap: wrap; }
+  .choice label { margin: 0; font-weight: 600; border: var(--border); border-radius: 8px; padding: 9px 14px; cursor: pointer; background: #fff; }
+  .choice input { display: none; }
+  .choice input:checked + span { color: var(--accent); }
+  .choice label:has(input:checked) { box-shadow: 3px 3px 0 var(--ink); background: var(--mark); }
+  .colors { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .colors label { margin: 0; display: flex; align-items: center; gap: 10px; border: var(--border); border-radius: 8px; padding: 8px 10px; }
+  input[type=color] { width: 36px; height: 30px; border: none; padding: 0; background: none; cursor: pointer; }
+  .preview { margin-top: 16px; border: var(--border); border-radius: 10px; padding: 18px; }
+  .preview .h { font: 700 13px ui-monospace, monospace; display: flex; justify-content: space-between; }
+  .preview .t { font-size: 34px; font-weight: 900; line-height: 1.05; margin: 14px 0; letter-spacing: -1px; }
+  .preview .t em { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; }
+  .preview .c { font-weight: 900; font-size: 22px; }
+  .preview .c b { padding: 0 6px; border-radius: 4px; }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 4px 4px 4px 0; }
+  td input { padding: 7px 10px !important; }
+  td:last-child { width: 44px; }
+  .x { padding: 6px 10px; box-shadow: none; }
+  .list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .item { display: flex; align-items: center; gap: 10px; border: 2px solid var(--soft); border-radius: 8px; padding: 8px 10px; }
+  .item span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .reels { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+  .reels figure { margin: 0; }
+  .reels video { width: 100%; aspect-ratio: 9/16; border: var(--border); border-radius: 10px; background: #000; }
+  .reels figcaption { font: 600 13px ui-monospace, monospace; margin-top: 4px; overflow-wrap: anywhere; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 8px; font-weight: 600; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.on { opacity: 1; }
+  code { font: 14px ui-monospace, monospace; background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+  @media (max-width: 520px) { .slider { grid-template-columns: 1fr 54px; } .slider span:first-child { grid-column: 1 / -1; } header h1 { font-size: 34px; } }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+</head>
+<body>
+<main>
+  <header>
+    <h1>Reel <em>Studio</em></h1>
+    <p>Set it once. Then type <code>/reel your topic</code> in Claude Code and get a finished reel. Changes save automatically.</p>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span> Your voice <span id="voiceStatus"></span></h2>
+    <p class="hint">Record 20 seconds in a quiet room, in the voice you use for reels. Every reel will be spoken in this voice. Only clone your own voice, or one you have permission to use.</p>
+    <div class="script" id="readMe">"Hey, welcome back. Today we're cracking one of the most asked interview questions. Most candidates get this wrong, but once you see how it works, you'll never forget it. Let's break it down step by step."</div>
+    <div class="row">
+      <button class="rec" id="recBtn">● Record 20s</button>
+      <label class="btn" style="margin:0">Upload a recording<input type="file" id="voiceFile" accept="audio/*" hidden></label>
+      <audio id="voicePlayer" controls hidden></audio>
+    </div>
+
+    <label for="testText">Hear how a reel will sound</label>
+    <div class="row">
+      <input type="text" id="testText" class="grow" value="Most people get this JavaScript question wrong. Here's why.">
+      <button id="testBtn">▶ Test voice</button>
+    </div>
+    <audio id="testPlayer" controls hidden style="margin-top:10px;width:100%"></audio>
+
+    <div class="slider"><span>Speaking speed</span><input type="range" min="0.8" max="1.15" step="0.01" data-key="speed"><output></output></div>
+    <div class="slider"><span>Energy</span><input type="range" min="0.25" max="0.9" step="0.05" data-key="exaggeration"><output></output></div>
+    <div class="slider"><span>Pacing (lower = calmer)</span><input type="range" min="0.2" max="0.7" step="0.05" data-key="cfg"><output></output></div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span> Handle &amp; look</h2>
+    <p class="hint">Your handle shows at the top of every reel.</p>
+    <label for="handle">Instagram handle</label>
+    <input type="text" id="handle" placeholder="@yourhandle">
+    <label>Colors</label>
+    <div class="colors">
+      <label><input type="color" data-theme="bg"> Background</label>
+      <label><input type="color" data-theme="ink"> Text</label>
+      <label><input type="color" data-theme="accent"> Accent</label>
+      <label><input type="color" data-theme="mark"> Highlight</label>
+    </div>
+    <div class="row" style="margin-top:10px"><button id="resetTheme" class="x">Reset colors</button></div>
+    <div class="preview" id="preview">
+      <div class="h"><span id="pvHandle">@yourhandle</span><span class="pa">#javascript</span></div>
+      <div class="t">What does this loop <em class="pa">print?</em></div>
+      <div class="c">Most people say <b class="pm">zero,</b> <span class="pa">var</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span> Music</h2>
+    <p class="hint">Music sits under your voice and dips automatically while you talk.</p>
+    <div class="choice" id="musicMode">
+      <label><input type="radio" name="music" value="auto"><span>🎵 Auto lo-fi beat</span></label>
+      <label><input type="radio" name="music" value="music/"><span>📁 My tracks</span></label>
+      <label><input type="radio" name="music" value=""><span>🔇 No music</span></label>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button id="beatBtn">▶ Hear a sample beat</button>
+      <label class="btn" style="margin:0">Add tracks (mp3)<input type="file" id="musicFile" accept="audio/*" multiple hidden></label>
+    </div>
+    <audio id="beatPlayer" controls hidden style="margin-top:10px;width:100%"></audio>
+    <p class="hint" style="margin-top:12px">With "My tracks", each reel picks one at random. Use music you have the rights to (e.g. Pixabay Music, YouTube Audio Library).</p>
+    <div class="list" id="musicList"></div>
+    <div class="slider"><span>Music volume</span><input type="range" min="0" max="1" step="0.05" data-key="musicVolume"><output></output></div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span> Sound effects</h2>
+    <p class="hint">Whoosh on scene changes, key clicks while code types, pops on cards, a ding or error buzz on output, a tap on the Follow button.</p>
+    <div class="choice">
+      <label><input type="radio" name="sfx" value="1"><span>On</span></label>
+      <label><input type="radio" name="sfx" value="0"><span>Off</span></label>
+    </div>
+    <div class="slider"><span>Effects volume</span><input type="range" min="0" max="1" step="0.05" data-key="sfxVolume"><output></output></div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span> Pronunciation</h2>
+    <p class="hint">If the voice says a tech word wrong, write how it sounds. Captions keep the real spelling.</p>
+    <table><tbody id="pron"></tbody></table>
+    <div class="row" style="margin-top:10px"><button id="addPron">+ Add word</button></div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span> Your reels</h2>
+    <p class="hint">Make one in Claude Code: <code>/reel Day 1 of JavaScript interview prep: closures</code></p>
+    <div class="reels" id="reels"></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const THEME = {bg: '#F3EFE6', ink: '#151515', accent: '#E4372B', mark: '#FFE066'};
+let S = null, saveTimer = null;
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1800);
+}
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, opts);
+  if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || r.statusText); }
+  return r;
+}
+
+function save(patch) {
+  Object.assign(S.config, patch);
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try { await api('/api/config', {method: 'POST', body: JSON.stringify(patch)}); toast('Saved'); }
+    catch (e) { toast('Save failed: ' + e.message); }
+  }, 350);
+}
+
+function render() {
+  const c = S.config;
+  $('#voiceStatus').innerHTML = S.voice ? `<span class="pill ok">✓ ${S.voice}s recorded</span>` : '<span class="pill no">not recorded yet</span>';
+  const vp = $('#voicePlayer');
+  if (S.voice) { vp.hidden = false; vp.src = '/voice.wav?' + Date.now(); } else vp.hidden = true;
+  $$('[data-key]').forEach((el) => {
+    const v = c[el.dataset.key] ?? el.value; el.value = v; el.nextElementSibling.value = (+v).toFixed(2);
+  });
+  $('#handle').value = c.handle || '';
+  const th = {...THEME, ...(c.theme || {})};
+  $$('[data-theme]').forEach((el) => (el.value = th[el.dataset.theme]));
+  paintPreview(th);
+  const mode = c.music === 'auto' || c.music === undefined ? 'auto' : c.music ? 'music/' : '';
+  $$('input[name=music]').forEach((r) => (r.checked = r.value === mode));
+  $$('input[name=sfx]').forEach((r) => (r.checked = r.value === (c.sfx === false ? '0' : '1')));
+  $('#musicList').innerHTML = S.music.length
+    ? S.music.map((m) => `<div class="item"><span>🎵 ${esc(m)}</span><audio controls preload="none" src="/music/${encodeURIComponent(m)}" style="height:32px"></audio><button class="x" data-del="${esc(m)}">✕</button></div>`).join('')
+    : '<p class="hint" style="margin:0">No tracks added yet.</p>';
+  renderPron();
+  $('#reels').innerHTML = S.reels.length
+    ? S.reels.map((r) => `<figure><video controls preload="metadata" src="${r.url}"></video><figcaption>${esc(r.slug)}</figcaption></figure>`).join('')
+    : '<p class="hint" style="margin:0">No reels yet.</p>';
+}
+
+function esc(s) { return String(s).replace(/[&<>"]/g, (ch) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[ch])); }
+
+function paintPreview(th) {
+  const p = $('#preview');
+  p.style.background = th.bg; p.style.color = th.ink; p.style.borderColor = th.ink;
+  p.querySelectorAll('.pa').forEach((e) => (e.style.color = th.accent));
+  p.querySelectorAll('.pm').forEach((e) => (e.style.background = th.mark));
+  $('#pvHandle').textContent = $('#handle').value || '@yourhandle';
+}
+
+function renderPron() {
+  const rows = Object.entries(S.config.pronounce || {});
+  $('#pron').innerHTML = rows.map(([w, s], i) =>
+    `<tr><td><input type="text" value="${esc(w)}" data-pw="${i}" placeholder="word"></td><td>→</td><td><input type="text" value="${esc(s)}" data-ps="${i}" placeholder="say it like"></td><td><button class="x" data-pdel="${i}">✕</button></td></tr>`).join('');
+}
+
+function readPron() {
+  const out = {};
+  $$('[data-pw]').forEach((el) => {
+    const s = document.querySelector(`[data-ps="${el.dataset.pw}"]`).value.trim();
+    if (el.value.trim()) out[el.value.trim()] = s;
+  });
+  return out;
+}
+
+// ---- events ----
+$$('[data-key]').forEach((el) => el.addEventListener('input', () => {
+  el.nextElementSibling.value = (+el.value).toFixed(2); save({[el.dataset.key]: +el.value});
+}));
+$('#handle').addEventListener('input', (e) => {
+  let h = e.target.value.trim(); if (h && !h.startsWith('@')) h = '@' + h;
+  paintPreview({...THEME, ...(S.config.theme || {})}); save({handle: h});
+});
+$$('[data-theme]').forEach((el) => el.addEventListener('input', () => {
+  const th = {...THEME, ...(S.config.theme || {}), [el.dataset.theme]: el.value}; paintPreview(th); save({theme: th});
+}));
+$('#resetTheme').onclick = () => { save({theme: {...THEME}}); render(); };
+$$('input[name=music]').forEach((r) => r.addEventListener('change', () => save({music: r.value || null})));
+$$('input[name=sfx]').forEach((r) => r.addEventListener('change', () => save({sfx: r.value === '1'})));
+$('#pron').addEventListener('input', () => save({pronounce: readPron()}));
+$('#pron').addEventListener('click', (e) => {
+  if (!e.target.dataset.pdel) return;
+  e.target.closest('tr').remove(); save({pronounce: readPron()});
+});
+$('#addPron').onclick = () => { S.config.pronounce = {...readPron(), '': ''}; renderPron(); $$('[data-pw]').at(-1).focus(); };
+$('#musicList').addEventListener('click', async (e) => {
+  if (!e.target.dataset.del) return;
+  S = await (await api('/api/music/delete?name=' + encodeURIComponent(e.target.dataset.del), {method: 'POST'})).json(); render();
+});
+$('#musicFile').onchange = async (e) => {
+  for (const f of e.target.files) S = await (await api('/api/music?name=' + encodeURIComponent(f.name), {method: 'POST', body: f})).json();
+  save({music: 'music/'}); render(); toast('Tracks added');
+};
+$('#beatBtn').onclick = () => {
+  const p = $('#beatPlayer'); p.hidden = false; p.src = '/api/beat?seed=' + Math.random().toString(36).slice(2); p.play();
+};
+
+async function uploadVoice(blob, ext) {
+  toast('Saving your voice...');
+  try { S = await (await api('/api/voice?ext=' + ext, {method: 'POST', body: blob})).json(); render(); toast('Voice saved ✓'); }
+  catch (e) { toast('Could not save: ' + e.message); }
+}
+$('#voiceFile').onchange = (e) => { const f = e.target.files[0]; if (f) uploadVoice(f, '.' + (f.name.split('.').pop() || 'm4a')); };
+
+let rec = null;
+$('#recBtn').onclick = async () => {
+  const b = $('#recBtn');
+  if (rec) { rec.stop(); return; }
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: false, noiseSuppression: true}}); }
+  catch { toast('Microphone blocked — allow it in the browser address bar'); return; }
+  const chunks = []; rec = new MediaRecorder(stream);
+  rec.ondataavailable = (e) => chunks.push(e.data);
+  rec.onstop = () => {
+    stream.getTracks().forEach((t) => t.stop()); clearInterval(rec._t); rec = null; b.textContent = '● Record again';
+    uploadVoice(new Blob(chunks, {type: chunks[0]?.type || 'audio/webm'}), '.webm');
+  };
+  rec.start(); let left = 20; b.textContent = `■ Stop (${left}s)`;
+  rec._t = setInterval(() => { left--; b.textContent = `■ Stop (${left}s)`; if (left <= 0) rec && rec.stop(); }, 1000);
+};
+
+$('#testBtn').onclick = async () => {
+  const b = $('#testBtn'); b.disabled = true; b.textContent = '⏳ Generating (first time ~30s)...';
+  try {
+    const r = await api('/api/preview', {method: 'POST', body: JSON.stringify({text: $('#testText').value})});
+    const p = $('#testPlayer'); p.hidden = false; p.src = URL.createObjectURL(await r.blob()); p.play();
+  } catch (e) { toast('Voice test failed: ' + e.message); }
+  b.disabled = false; b.textContent = '▶ Test voice';
+};
+
+(async () => { S = await (await api('/api/state')).json(); render(); })();
+</script>
+</body>
+</html>

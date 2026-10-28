@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+.DS_Store
+# personal: your settings, voice, music and reels never get committed
+config.json
+voice/*
+!voice/.gitkeep
+music/*
+!music/.gitkeep
+jobs/*
+!jobs/example/
+video/node_modules/
+video/build/
+video/public/jobs/
+video/src/brand.json
