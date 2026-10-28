@@ -129,8 +129,11 @@ class H(BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
     os.makedirs(os.path.join(ROOT, 'music'), exist_ok=True)
-    srv = ThreadingHTTPServer(('127.0.0.1', PORT), H)
-    url = f'http://localhost:{PORT}'
+    for port in range(PORT, PORT + 20):  # next free port if one is taken
+        try: srv = ThreadingHTTPServer(('127.0.0.1', port), H); break
+        except OSError: continue
+    else: sys.exit(f'No free port between {PORT} and {PORT + 19}')
+    url = f'http://localhost:{port}'
     print(f'Settings page: {url}  (Ctrl+C to stop)')
     if '--no-open' not in sys.argv: threading.Timer(0.6, lambda: webbrowser.open(url)).start()
     try: srv.serve_forever()

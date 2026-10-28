@@ -36,15 +36,17 @@ say "4/5 Settings"
 .venv/bin/python -c "import make; make.write_brand(make.load_config())"
 
 say "5/5 Downloading voice + caption models (~3.5 GB, first time only)"
-HF_HUB_DISABLE_XET=1 .venv/bin/python - <<'EOF'
+HF_HUB_DISABLE_XET=1 PYTHONWARNINGS=ignore .venv/bin/python - <<'EOF'
 from huggingface_hub import snapshot_download
 snapshot_download('ResembleAI/chatterbox', allow_patterns=['ve.safetensors', 't3_cfg.safetensors', 's3gen.safetensors', 'tokenizer.json', 'conds.pt'])
 from faster_whisper import WhisperModel
 import json; WhisperModel(json.load(open('config.json')).get('whisper', 'small.en'), device='cpu', compute_type='int8')
 EOF
 
-.venv/bin/python -c "import chatterbox, faster_whisper, scipy, perth; print()"
+.venv/bin/python -W ignore -c "import chatterbox, faster_whisper, scipy, perth"
 say "READY"
 if [ ! -f voice/me.wav ]; then
-  echo "Next: open the settings page to record your voice ->  .venv/bin/python ui.py"
+  echo "Next: record your voice on the settings page:"
+  echo "  \"$PWD/.venv/bin/python\" \"$PWD/ui.py\""
 fi
+echo "Then restart Claude Code and type:  /reel <your topic>"
