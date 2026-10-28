@@ -9,6 +9,8 @@ music/*
 !music/.gitkeep
 jobs/*
 !jobs/example/
+jobs/example/*
+!jobs/example/script.json
 video/node_modules/
 video/build/
 video/public/jobs/
